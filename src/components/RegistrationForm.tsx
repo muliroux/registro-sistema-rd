@@ -2,11 +2,32 @@ import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
 import { Checkbox } from "@/components/ui/checkbox";
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/card";
 import { Alert, AlertDescription } from "@/components/ui/alert";
-import { Loader2, CheckCircle, AlertCircle, Building2, Users, Mail, Lock, User } from "lucide-react";
+import {
+  Loader2,
+  CheckCircle,
+  AlertCircle,
+  Building2,
+  Users,
+  Mail,
+  Lock,
+  User,
+} from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
 
 interface UserCreate {
@@ -44,16 +65,16 @@ export default function RegistrationForm() {
     roles_list: [],
     filial_id: undefined,
   });
-  
+
   const [loading, setLoading] = useState(false);
   const [success, setSuccess] = useState(false);
   const [error, setError] = useState("");
-  const [apiUrl, setApiUrl] = useState(""); // URL da API será configurada pelo usuário
   const { toast } = useToast();
+  const apiUrl = import.meta.env.VITE_API_URI;
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    
+
     if (!apiUrl) {
       toast({
         title: "Erro",
@@ -85,7 +106,7 @@ export default function RegistrationForm() {
     setError("");
 
     try {
-      const response = await fetch(`${apiUrl}/register`, {
+      const response = await fetch(`${apiUrl}`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -108,7 +129,7 @@ export default function RegistrationForm() {
         title: "Sucesso!",
         description: "Usuário registrado com sucesso",
       });
-      
+
       // Reset form
       setFormData({
         nome_completo: "",
@@ -118,9 +139,9 @@ export default function RegistrationForm() {
         roles_list: [],
         filial_id: undefined,
       });
-      
     } catch (err) {
-      const errorMessage = err instanceof Error ? err.message : "Erro desconhecido";
+      const errorMessage =
+        err instanceof Error ? err.message : "Erro desconhecido";
       setError(errorMessage);
       toast({
         title: "Erro no registro",
@@ -134,32 +155,33 @@ export default function RegistrationForm() {
 
   const handleRoleChange = (roleId: number, checked: boolean) => {
     if (checked) {
-      setFormData(prev => ({
+      setFormData((prev) => ({
         ...prev,
-        roles_list: [...prev.roles_list, roleId]
+        roles_list: [...prev.roles_list, roleId],
       }));
     } else {
-      setFormData(prev => ({
+      setFormData((prev) => ({
         ...prev,
-        roles_list: prev.roles_list.filter(id => id !== roleId)
+        roles_list: prev.roles_list.filter((id) => id !== roleId),
       }));
     }
   };
 
   if (success) {
     return (
-      <div className="min-h-screen bg-gradient-primary flex items-center justify-center p-4">
+      <div className="min-h-screen bg-teal-100 flex items-center justify-center p-4">
         <Card className="w-full max-w-md shadow-elegant">
           <CardContent className="pt-8 text-center">
             <CheckCircle className="h-16 w-16 text-success mx-auto mb-4" />
-            <h2 className="text-2xl font-bold text-foreground mb-2">Registro Concluído!</h2>
+            <h2 className="text-2xl font-bold text-foreground mb-2">
+              Registro Concluído!
+            </h2>
             <p className="text-muted-foreground mb-6">
               O usuário foi registrado com sucesso no sistema.
             </p>
-            <Button 
+            <Button
               onClick={() => setSuccess(false)}
-              className="w-full bg-gradient-primary border-0 hover:opacity-90 transition-smooth"
-            >
+              className="w-full bg-teal-700 border-0 hover:opacity-90 hover:bg-teal-500 transition-smooth">
               Registrar Novo Usuário
             </Button>
           </CardContent>
@@ -169,24 +191,26 @@ export default function RegistrationForm() {
   }
 
   return (
-    <div className="min-h-screen bg-gradient-primary flex items-center justify-center p-4">
+    <div className="min-h-screen bg-teal-100 flex items-center justify-center p-4">
       <Card className="w-full max-w-2xl shadow-elegant">
         <CardHeader className="text-center space-y-2">
-          <div className="mx-auto h-12 w-12 bg-gradient-primary rounded-full flex items-center justify-center mb-4">
+          <div className="mx-auto h-12 w-12 bg-teal-700 rounded-full flex items-center justify-center mb-4">
             <Users className="h-6 w-6 text-primary-foreground" />
           </div>
-          <CardTitle className="text-3xl font-bold bg-gradient-primary bg-clip-text text-transparent">
+          <CardTitle className="text-3xl font-bold bg-teal-700 bg-clip-text text-transparent">
             Registro de Usuário
           </CardTitle>
           <CardDescription className="text-lg">
             Preencha os dados para registrar um novo usuário no sistema
           </CardDescription>
         </CardHeader>
-        
+
         <CardContent className="space-y-6">
           {/* Configuração da API */}
-          <div className="bg-accent/50 p-4 rounded-lg border">
-            <Label htmlFor="apiUrl" className="text-sm font-medium flex items-center gap-2 mb-2">
+          {/* <div className="bg-accent/50 p-4 rounded-lg border">
+            <Label
+              htmlFor="apiUrl"
+              className="text-sm font-medium flex items-center gap-2 mb-2">
               <Building2 className="h-4 w-4" />
               URL da API
             </Label>
@@ -201,7 +225,7 @@ export default function RegistrationForm() {
             <p className="text-xs text-muted-foreground mt-2">
               Configure a URL base da sua API (ex: https://api.exemplo.com)
             </p>
-          </div>
+          </div> */}
 
           {error && (
             <Alert variant="destructive">
@@ -213,7 +237,9 @@ export default function RegistrationForm() {
           <form onSubmit={handleSubmit} className="space-y-6">
             <div className="grid md:grid-cols-2 gap-4">
               <div className="space-y-2">
-                <Label htmlFor="nome_completo" className="flex items-center gap-2">
+                <Label
+                  htmlFor="nome_completo"
+                  className="flex items-center gap-2">
                   <User className="h-4 w-4" />
                   Nome Completo *
                 </Label>
@@ -222,19 +248,29 @@ export default function RegistrationForm() {
                   type="text"
                   required
                   value={formData.nome_completo}
-                  onChange={(e) => setFormData(prev => ({ ...prev, nome_completo: e.target.value }))}
+                  onChange={(e) =>
+                    setFormData((prev) => ({
+                      ...prev,
+                      nome_completo: e.target.value,
+                    }))
+                  }
                   className="transition-smooth focus:shadow-soft"
                   placeholder="João Silva Santos"
                 />
               </div>
 
               <div className="space-y-2">
-                <Label htmlFor="codigo_a">Código A</Label>
+                <Label htmlFor="codigo_a">Código A (Ex.: A12345)</Label>
                 <Input
                   id="codigo_a"
                   type="text"
                   value={formData.codigo_a}
-                  onChange={(e) => setFormData(prev => ({ ...prev, codigo_a: e.target.value }))}
+                  onChange={(e) =>
+                    setFormData((prev) => ({
+                      ...prev,
+                      codigo_a: e.target.value,
+                    }))
+                  }
                   className="transition-smooth focus:shadow-soft"
                   placeholder="Opcional"
                 />
@@ -252,7 +288,9 @@ export default function RegistrationForm() {
                   type="email"
                   required
                   value={formData.email}
-                  onChange={(e) => setFormData(prev => ({ ...prev, email: e.target.value }))}
+                  onChange={(e) =>
+                    setFormData((prev) => ({ ...prev, email: e.target.value }))
+                  }
                   className="transition-smooth focus:shadow-soft"
                   placeholder="joao.silva@empresa.com"
                 />
@@ -269,7 +307,12 @@ export default function RegistrationForm() {
                   required
                   minLength={8}
                   value={formData.password}
-                  onChange={(e) => setFormData(prev => ({ ...prev, password: e.target.value }))}
+                  onChange={(e) =>
+                    setFormData((prev) => ({
+                      ...prev,
+                      password: e.target.value,
+                    }))
+                  }
                   className="transition-smooth focus:shadow-soft"
                   placeholder="Mínimo 8 caracteres"
                 />
@@ -281,9 +324,14 @@ export default function RegistrationForm() {
                 <Building2 className="h-4 w-4" />
                 Filial
               </Label>
-              <Select value={formData.filial_id?.toString()} onValueChange={(value) => 
-                setFormData(prev => ({ ...prev, filial_id: value ? parseInt(value) : undefined }))
-              }>
+              <Select
+                value={formData.filial_id?.toString()}
+                onValueChange={(value) =>
+                  setFormData((prev) => ({
+                    ...prev,
+                    filial_id: value ? parseInt(value) : undefined,
+                  }))
+                }>
                 <SelectTrigger className="transition-smooth focus:shadow-soft">
                   <SelectValue placeholder="Selecione uma filial (opcional)" />
                 </SelectTrigger>
@@ -308,13 +356,14 @@ export default function RegistrationForm() {
                     <Checkbox
                       id={`role-${role.id}`}
                       checked={formData.roles_list.includes(role.id)}
-                      onCheckedChange={(checked) => handleRoleChange(role.id, checked as boolean)}
-                      className="transition-smooth"
+                      onCheckedChange={(checked) =>
+                        handleRoleChange(role.id, checked as boolean)
+                      }
+                      className="transition-smooth  border-teal-400"
                     />
                     <Label
                       htmlFor={`role-${role.id}`}
-                      className="text-sm font-normal cursor-pointer"
-                    >
+                      className="text-sm font-normal cursor-pointer ">
                       {role.name}
                     </Label>
                   </div>
@@ -325,8 +374,7 @@ export default function RegistrationForm() {
             <Button
               type="submit"
               disabled={loading}
-              className="w-full bg-gradient-primary border-0 hover:opacity-90 transition-smooth shadow-elegant text-lg py-6"
-            >
+              className="w-full bg-teal-700 border-0 hover:opacity-90 hover:bg-teal-500 transition-smooth shadow-elegant text-lg py-6">
               {loading ? (
                 <>
                   <Loader2 className="mr-2 h-5 w-5 animate-spin" />
