@@ -39,6 +39,13 @@ interface UserCreate {
   filial_id?: number;
 }
 
+interface UserCreateResponse {
+  id: number;
+  login: string;
+  roles: number[];
+  createdAt: Date;
+}
+
 const FILIAIS = [
   { id: 1, name: "HOLDING" },
   { id: 2, name: "NATAL" },
@@ -67,22 +74,26 @@ export default function RegistrationForm() {
   });
 
   const [loading, setLoading] = useState(false);
-  const [success, setSuccess] = useState(false);
+  const [success, setSuccess] = useState({
+    success: false,
+    result: null,
+  });
   const [error, setError] = useState("");
   const { toast } = useToast();
   const apiUrl = import.meta.env.VITE_API_URI;
+  const webUrl = import.meta.env.VITE_WEB_URI;
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
 
-    if (!apiUrl) {
-      toast({
-        title: "Erro",
-        description: "Por favor, configure a URL da sua API",
-        variant: "destructive",
-      });
-      return;
-    }
+    // if (!apiUrl) {
+    //   toast({
+    //     title: "Erro",
+    //     description: "Por favor, configure a URL da sua API",
+    //     variant: "destructive",
+    //   });
+    //   return;
+    // }
 
     if (formData.password.length < 8) {
       toast({
@@ -124,7 +135,10 @@ export default function RegistrationForm() {
         throw new Error(result.detail || "Erro no registro");
       }
 
-      setSuccess(true);
+      setSuccess({
+        success: true,
+        result: result,
+      });
       toast({
         title: "Sucesso!",
         description: "Usuário registrado com sucesso",
@@ -167,7 +181,7 @@ export default function RegistrationForm() {
     }
   };
 
-  if (success) {
+  if (success.success && success.result) {
     return (
       <div className="min-h-screen bg-teal-100 flex items-center justify-center p-4">
         <Card className="w-full max-w-md shadow-elegant">
@@ -179,11 +193,24 @@ export default function RegistrationForm() {
             <p className="text-muted-foreground mb-6">
               O usuário foi registrado com sucesso no sistema.
             </p>
-            <Button
-              onClick={() => setSuccess(false)}
-              className="w-full bg-teal-700 border-0 hover:opacity-90 hover:bg-teal-500 transition-smooth">
-              Registrar Novo Usuário
-            </Button>
+            <p className="text-muted-foreground mb-6">
+              Seu login é {success.result.login}!
+            </p>
+            <div className="flex flex-col gap-4 mt-6">
+              <Button className="w-full bg-teal-600 border-0 hover:opacity-90 hover:bg-teal-400 transition-smooth">
+                <a href={webUrl}>Entre no sistema!</a>
+              </Button>
+              <Button
+                onClick={() =>
+                  setSuccess({
+                    success: false,
+                    result: null,
+                  })
+                }
+                className="w-full bg-teal-700 border-0 hover:opacity-90 hover:bg-teal-500 transition-smooth">
+                Registrar Novo Usuário
+              </Button>
+            </div>
           </CardContent>
         </Card>
       </div>
